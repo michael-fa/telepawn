@@ -12,14 +12,15 @@ namespace telepawn
 {
     class Program
     {
-        //Kerninformationen
+        //Coreinfo
         static bool m_isWindows;
         static bool m_isLinux;
 
         public static Telegram.TelegramHandle m_TelegramHandle = null;
         public static List<Scripting.ScriptTimer> m_ScriptTimers = null;
+        public static List<Plugins.Plugin> m_Plugins = null;
         public static List<Scripting.Script> m_Scripts = null;
-
+      
         public struct Settings
         {
             public string _botToken;
@@ -77,15 +78,38 @@ namespace telepawn
 
             __InitialChecks();
             __InitialSetup();
+
             m_TelegramHandle.StartReceiving();
 
 
             //Print a time and date to log file
-            File.AppendAllText("Logs/current.txt", "\n++++++++++++++++++++ | LOG " + DateTime.Now + " | ++++++++++++++++++++\n");//Print out log file header (file only)
+            File.AppendAllText("Logs/current.txt", "\n++++++++++++++++++++ | LOG " + DateTime.Now + " | ++++++++++++++++++++\n");
+            
             //Console initial message
             Log.Info("INIT: -> Telegram AMX Bot © 2022 - www.fanter.eu <-");
             if (m_isWindows) Log.Info("INIT: -> Running on Windows.");
             else if (m_isLinux) Log.Info("INIT: Running on Linux. (Make sure you are always up to date!");
+
+
+            //Load all plugins (extensions)
+            try
+            {
+                foreach (string fl in Directory.GetFiles("Plugins/"))
+                {
+                    // demand load main.amx     ||  skip this file
+                    if (!fl.EndsWith(".dll")) continue;
+                    Log.Info("[CORE] Found plugin: '" + fl + "' !");
+                    new Plugins.Plugin(fl);
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Exception(ex);
+                StopSafely();
+                return;
+            }
+
+
 
             //Load main.amx, or error out if not available
             if (!File.Exists("Scripts/main.amx"))
@@ -116,7 +140,6 @@ namespace telepawn
             }
 
 
-            Plugins.Plugin pl = new Plugins.Plugin("testplugin.dll");
         //Handle commands.
         _CMDLOOP:
             Utils.ConsoleCommand.Loop();
@@ -130,6 +153,10 @@ namespace telepawn
             if (!Directory.Exists("Logs/"))
                 Directory.CreateDirectory("Logs/");
 
+            //Check if Plugins dir exists
+            if (!Directory.Exists("Plugins/"))
+                Directory.CreateDirectory("Plugins/");
+
             //Check if Scripts dir exists
             if (!Directory.Exists("Scripts/"))
                 Directory.CreateDirectory("Scripts/");
@@ -142,6 +169,7 @@ namespace telepawn
                 File.AppendAllText("config.ini", "# (C) 2022 fanter.eu - TELEPAWN\n\n# This is your first server config - the \"core\" section has to be set before you consider running the bot!");
             }
 
+            //"Scan" the config file before using it.
             IniFile x = new IniFile("config.ini");
 
             if (!x.KeyExists("telegram_bot_token", "core"))
@@ -160,6 +188,7 @@ namespace telepawn
             //Setting everything up
            
             Program.m_ScriptTimers = new List<Scripting.ScriptTimer>();
+            Program.m_Plugins = new List<Plugins.Plugin>();   //Create list for plugins
             Program.m_Scripts = new List<Scripting.Script>();   //Create list for scripts
 
             //Get data from config.ini
@@ -169,12 +198,20 @@ namespace telepawn
             GC.Collect();
 
 
-
+            //This belongs here, because it accesses m_Settings, which is now accessable for the first time.
             Program.m_TelegramHandle = new Telegram.TelegramHandle();
         }
 
         static public void StopSafely()
         {
+
+            foreach (Plugins.Plugin pl in m_Plugins)
+            {
+                pl.Unload(0);
+
+                Log.WriteLine("Script " + pl._File + " unloaded.");
+            }
+
             foreach (Script script in m_Scripts)
             {
                 if (script.amx == null) continue;
@@ -189,11 +226,11 @@ namespace telepawn
                 Log.WriteLine("Script " + script._amxFile + " unloaded.");
             }
 
-            
-            File.Copy("Logs/current.txt", ("Logs/" + DateTime.Now.ToString().Replace(':', '-') + ".txt")); //copy current log txt to one with the date in name and delete the old one
+            //copy current log txt to one with the date in name and delete the old one
+            File.Copy("Logs/current.txt", ("Logs/" + DateTime.Now.ToString().Replace(':', '-') + ".txt"));
             if (File.Exists("Logs/current.txt")) File.Delete("Logs/current.txt");
-
             Environment.Exit(0);
+            
         }
 
     }

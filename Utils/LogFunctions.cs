@@ -17,21 +17,21 @@ namespace telepawn.Utils
             if (_source != null) Console.WriteLine("[INFO] [" + _source._amxFile + "] " + _msg);
             else Console.WriteLine("[INFO] " + _msg);
 
-            if (_msg.Length > 0) File.AppendAllText("Logs/current.txt", _msg + "\n");
+            if (_msg.Length > 0) File.AppendAllText("Logs/current.txt", "[INFO] " + _msg + "\n");
         }
 
         public static void Error(string _msg, telepawn.Scripting.Script _source = null)
         {
             if (_source != null) Console.WriteLine("[ERROR] [" + _source._amxFile + "] " + _msg);
             else Console.WriteLine("[ERROR] " + _msg);
-            if (_msg.Length > 0) File.AppendAllText("Logs/current.txt", _msg + "\n");
+            if (_msg.Length > 0) File.AppendAllText("Logs/current.txt", "[ERROR] " + _msg + "\n");
         }
 
         public static void Warning(string _msg, telepawn.Scripting.Script _source = null)
         {
             if (_source != null) Console.WriteLine("[WARNING] [" + _source._amxFile + "] " + _msg);
             else Console.WriteLine("[WARNING] " + _msg);
-            if (_msg.Length > 0) File.AppendAllText("Logs/current.txt", _msg + "\n");
+            if (_msg.Length > 0) File.AppendAllText("Logs/current.txt", "[WARNING] " + _msg + "\n");
         }
 
 
@@ -40,7 +40,7 @@ namespace telepawn.Utils
 #if DEBUG
             if (_source != null) Console.WriteLine("[DEBUG] [" + _source._amxFile + "] " + _msg);
             else Console.WriteLine("[DEBUG] " + _msg);
-            if (_msg.Length > 0) File.AppendAllText("Logs/current.txt", _msg + "\n");
+            if (_msg.Length > 0) File.AppendAllText("Logs/current.txt", "[DEBUG] " + _msg + "\n");
 #endif
         }
 
