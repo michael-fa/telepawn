@@ -1,0 +1,92 @@
+﻿using AMXWrapper;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+
+using Telegram.Bot;
+using Telegram.Bot.Exceptions;
+using Telegram.Bot.Extensions.Polling;
+using Telegram.Bot.Types;
+using Telegram.Bot.Types.Enums;
+
+namespace telepawn.Telegram
+{
+    public class TelegramHandle
+    {
+        public TelegramBotClient m_TelegramBotClient;
+        private CancellationTokenSource m_Cts;
+        private CancellationToken m_CancellationToken;
+        private ReceiverOptions m_rcvOptions;
+
+
+        //User data?
+        public User m_User = null;
+
+        public TelegramHandle()
+        {
+            try
+            {
+                m_TelegramBotClient = new TelegramBotClient(Program.m_Settings._botToken);
+
+                var me = m_TelegramBotClient.GetMeAsync();
+                m_User = me.Result;
+
+                m_Cts = new CancellationTokenSource();
+                m_CancellationToken = m_Cts.Token;
+                m_rcvOptions = new ReceiverOptions
+                {
+                    AllowedUpdates = { } // receive all update types
+                };
+            }
+            catch (Exception ex)
+            {
+                Utils.Log.Exception(ex);
+                Utils.Log.Info("[HINT] Above exception may be due to a wrong Telegram Bot Token! Set a Telegram Bot up!");
+                Thread.Sleep(5000);
+            }
+        }
+
+        public bool StartReceiving()
+        {
+            this.m_TelegramBotClient.StartReceiving(
+               this.HandleUpdateAsync,
+               this.HandleErrorAsync,
+               m_rcvOptions,
+               m_CancellationToken
+           );
+            return true;
+        }
+
+        public async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
+        {
+            if (update.Message is Message message)
+            {
+                Utils.Log.Debug("Received message ( " + message.Type.ToString() + " ) : " + message.Text);
+                switch (message.Type)
+                {
+                    case MessageType.Text:
+                        //await botClient.SendTextMessageAsync(message.Chat, "Hello");
+                        AMXPublic p = Program.m_Scripts[0].amx.FindPublic("OnTelegramMessage");
+                        var tmp = p.AMX.Push(message.Text);
+                        var tmp2 = p.AMX.Push(message.Chat.Id.ToString());
+                        if (p != null) p.Execute();
+                        p.AMX.Release(tmp);
+                        p.AMX.Release(tmp2);
+                        break;
+                }
+
+            }
+        }
+
+        public async Task HandleErrorAsync(ITelegramBotClient botClient, Exception exception, CancellationToken cancellationToken)
+        {
+            if (exception is ApiRequestException apiRequestException)
+            {
+                await botClient.SendTextMessageAsync(123, apiRequestException.ToString());
+            }
+        }
+    }
+}
