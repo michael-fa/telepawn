@@ -72,11 +72,19 @@ namespace telepawn.Telegram
                         case MessageType.Text:
                             //await botClient.SendTextMessageAsync(message.Chat, "Hello");
                             AMXPublic p = Program.m_Scripts[0].m_Amx.FindPublic("OnTelegramMessage");
-                            var tmp = p.AMX.Push(message.Text);
-                            var tmp2 = p.AMX.Push(message.Chat.Id.ToString());
-                            if (p != null) p.Execute();
-                            p.AMX.Release(tmp);
-                            p.AMX.Release(tmp2);
+                            if(p != null)
+                            {
+                                var tmp = p.AMX.Push(message.Text);
+                                var tmp2 = p.AMX.Push(message.From.Username);
+                                var tmp3 = p.AMX.Push(message.MessageId.ToString());
+                                var tmp4 = p.AMX.Push(message.Chat.Id.ToString());
+                                p.Execute();
+                                p.AMX.Release(tmp);
+                                p.AMX.Release(tmp2);
+                                p.AMX.Release(tmp3);
+                                p.AMX.Release(tmp4);
+                            }
+                           
                             break;
                     }
                 }
@@ -94,12 +102,17 @@ namespace telepawn.Telegram
                     Utils.Log.Debug("Telegram exception " + apiRequestException.ToString() + ": " + apiRequestException.Message + "  at  " + apiRequestException.Source);
                     
                     AMXPublic p = Program.m_Scripts[0].m_Amx.FindPublic("OnTelegramError");
-                    var tmp1 = p.AMX.Push(apiRequestException.Message);
-                    var tmp2 = p.AMX.Push(apiRequestException.Source);
-                    p.AMX.Push(apiRequestException.ErrorCode);
-                    if (p != null) p.Execute();
-                    p.AMX.Release(tmp1);
-                    p.AMX.Release(tmp2);
+
+                    if(p != null)
+                    {
+                        var tmp1 = p.AMX.Push(apiRequestException.Message);
+                        var tmp2 = p.AMX.Push(apiRequestException.Source);
+                        p.AMX.Push(apiRequestException.ErrorCode);
+                        p.Execute();
+                        p.AMX.Release(tmp1);
+                        p.AMX.Release(tmp2);
+                    }
+                    
                 });
             }
         }

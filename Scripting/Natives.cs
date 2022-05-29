@@ -105,17 +105,15 @@ namespace telepawn.Scripting
 
         public static int SetTimer(AMX amx1, AMXArgumentList args1, Script caller_script)
         {
-            if (args1[1].AsInt32() > 1 || args1[1].AsInt32() < 0)
+            if (args1[2].AsInt32() > 1 || args1[2].AsInt32() < 0)
             {
                 Utils.Log.Error("SetTimer: Argument 'repeating' is boolean. Please pass 0 or 1 only!");
                 return 1;
             }
 
-            //Utils.Log.Debug("Lenghts: + " + args1.Length + "Format: " + args1[3].AsString());
-            //try { ScriptTimer timer = new ScriptTimer(args1[2].AsInt32(), Convert.ToBoolean(args1[1].AsInt32()), args1[0].AsString(), caller_script, args1[3].AsString(), args1); 
             try
             {
-                ScriptTimer timer = new ScriptTimer(args1[2].AsInt32(), Convert.ToBoolean(args1[1].AsInt32()), args1[0].AsString(), caller_script);
+                ScriptTimer timer = new ScriptTimer(args1[1].AsInt32(), Convert.ToBoolean(args1[2].AsInt32()), args1[0].AsString(), caller_script);
             }
             catch (Exception ex)
             {
@@ -183,8 +181,7 @@ namespace telepawn.Scripting
             if (args1.Length != 2) return 0;
             //Console.Write("\nChatID " + Convert.ToString(args1[0].AsString()));
             var x = Program.m_TelegramHandle.m_TelegramBotClient.SendTextMessageAsync(Convert.ToString(args1[0].AsString()), Convert.ToString(args1[1].AsString()));
-            //Program.m_TelegramHandle.m_TelegramBotClient.
-
+            //Program.m_TelegramHandle.m_TelegramBotClient.DeleteMessageAsync()
 
             return 1;
         }
