@@ -67,7 +67,7 @@ namespace telepawn.Scripting
                 return 0;
             }
             Script scr = new Script(args1[0].AsString(), true);
-            AMXWrapper.AMXPublic pub = scr.amx.FindPublic("OnInit");
+            AMXWrapper.AMXPublic pub = scr.m_Amx.FindPublic("OnInit");
             if (pub != null) pub.Execute();
             return 1;
         }
@@ -83,12 +83,12 @@ namespace telepawn.Scripting
 
             foreach (Script sc in Program.m_Scripts)
             {
-                if (sc._amxFile.Equals(args1[0].AsString()))
+                if (sc.m_AmxFile.Equals(args1[0].AsString()))
                 {
-                    AMXWrapper.AMXPublic pub = sc.amx.FindPublic("OnUnload");
+                    AMXWrapper.AMXPublic pub = sc.m_Amx.FindPublic("OnUnload");
                     if (pub != null) pub.Execute();
-                    sc.amx.Dispose();
-                    sc.amx = null;
+                    sc.m_Amx.Dispose();
+                    sc.m_Amx = null;
                     Program.m_Scripts.Remove(sc);
                     Utils.Log.Info("[CORE] Script '" + args1[0].AsString() + "' unloaded.");
                     return 1;
@@ -143,16 +143,49 @@ namespace telepawn.Scripting
 
 
 
+        public static int GetBotUserName(AMX amx1, AMXArgumentList args1, Script caller_script)
+        {
+            if (args1.Length != 1) return 0;
+            try
+            {
+                AMX.SetString(args1[0].AsCellPtr(), Program.m_TelegramHandle.m_User.Username, true);
+            }
+            catch (Exception ex)
+            {
+                Utils.Log.Exception(ex, caller_script);
+                Utils.Log.Error("In native 'GetBotUserName' (dest_string must be an array, or received invalid parameters!)" + caller_script);
+            }
+            return 1;
+        }
 
+        public static int GetBotName(AMX amx1, AMXArgumentList args1, Script caller_script)
+        {
+            if (args1.Length != 2) return 0;
+            try
+            {
+                AMX.SetString(args1[0].AsCellPtr(), Program.m_TelegramHandle.m_User.FirstName, true);
+                AMX.SetString(args1[1].AsCellPtr(), Program.m_TelegramHandle.m_User.LastName, true);
+
+                var res = Program.m_TelegramHandle.m_TelegramBotClient.GetMeAsync();
+            }
+            catch (Exception ex)
+            {
+                Utils.Log.Exception(ex, caller_script);
+                Utils.Log.Error("In native 'GetBotFirstLastName' (dest_string must be a array, or invalid parameters!)" + caller_script);
+            }
+            return 1;
+        }
 
 
 
         public static int SendChatMessage(AMX amx1, AMXArgumentList args1, Script caller_script)
         {
             if (args1.Length != 2) return 0;
-            Console.Write("\nChatID " + Convert.ToString(args1[0].AsString()));
-            var x = Program.m_TelegramHandle.m_TelegramBotClient.SendTextMessageAsync(Convert.ToString(args1[0].AsString()) , Convert.ToString(args1[1].AsString()));
+            //Console.Write("\nChatID " + Convert.ToString(args1[0].AsString()));
+            var x = Program.m_TelegramHandle.m_TelegramBotClient.SendTextMessageAsync(Convert.ToString(args1[0].AsString()), Convert.ToString(args1[1].AsString()));
             //Program.m_TelegramHandle.m_TelegramBotClient.
+
+
             return 1;
         }
     }

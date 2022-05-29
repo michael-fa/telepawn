@@ -25,6 +25,7 @@ namespace telepawn
         {
             public string _botToken;
             public string _firstScript;
+            public bool _clientMode;
         } public static Settings m_Settings;
 
 
@@ -75,12 +76,10 @@ namespace telepawn
             _handler += new EventHandler(Handler);
             SetConsoleCtrlHandler(_handler, true);
 
-
             __InitialChecks();
             __InitialSetup();
 
             m_TelegramHandle.StartReceiving();
-
 
             //Print a time and date to log file
             File.AppendAllText("Logs/current.txt", "\n++++++++++++++++++++ | LOG " + DateTime.Now + " | ++++++++++++++++++++\n");
@@ -90,6 +89,9 @@ namespace telepawn
             if (m_isWindows) Log.Info("INIT: -> Running on Windows.");
             else if (m_isLinux) Log.Info("INIT: Running on Linux. (Make sure you are always up to date!");
 
+            //Check and warn about client mode.
+            if (m_Settings._clientMode)
+                Log.Info("INIT: -> Running in TELEGRAM CLIENT mode!");
 
             //Load all plugins (extensions)
             try
@@ -110,7 +112,6 @@ namespace telepawn
             }
 
 
-
             //Load main.amx, or error out if not available
             if (!File.Exists("Scripts/main.amx"))
             {
@@ -119,6 +120,7 @@ namespace telepawn
                 return;
             }
             else new Script(Program.m_Settings._firstScript);
+
 
             //Now add all filterscripts
             try
@@ -178,6 +180,9 @@ namespace telepawn
             if (!x.KeyExists("first_script", "core"))
                 x.Write("first_script", "main", "core");
 
+            if (!x.KeyExists("client_mode", "core"))
+                x.Write("client_mode", "false", "core");
+
         }
 
 
@@ -195,11 +200,16 @@ namespace telepawn
             IniFile x = new IniFile("config.ini");
             m_Settings._botToken = x.Read("telegram_bot_token", "core");
             m_Settings._firstScript = x.Read("first_script", "core");
+            m_Settings._clientMode = Convert.ToBoolean(x.Read("client_mode", "core"));
             GC.Collect();
 
 
-            //This belongs here, because it accesses m_Settings, which is now accessable for the first time.
-            Program.m_TelegramHandle = new Telegram.TelegramHandle();
+            //Start telegram client or bot api.
+            if (m_Settings._clientMode)
+            {
+
+            }
+            else Program.m_TelegramHandle = new Telegram.TelegramHandle();//This belongs here, because it accesses m_Settings, which is now accessable for the first time.
         }
 
         static public void StopSafely()
@@ -214,16 +224,16 @@ namespace telepawn
 
             foreach (Script script in m_Scripts)
             {
-                if (script.amx == null) continue;
+                if (script.m_Amx == null) continue;
 
                 script.StopAllTimers();
 
-                if (script.amx.FindPublic("OnUnload") != null)
-                    script.amx.FindPublic("OnUnload").Execute();
+                if (script.m_Amx.FindPublic("OnUnload") != null)
+                    script.m_Amx.FindPublic("OnUnload").Execute();
 
-                script.amx.Dispose();
-                script.amx = null;
-                Log.WriteLine("Script " + script._amxFile + " unloaded.");
+                script.m_Amx.Dispose();
+                script.m_Amx = null;
+                Log.WriteLine("Script " + script.m_AmxFile + " unloaded.");
             }
 
             //copy current log txt to one with the date in name and delete the old one

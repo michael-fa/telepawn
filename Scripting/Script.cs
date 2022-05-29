@@ -8,16 +8,17 @@ namespace telepawn.Scripting
 {
     public class Script
     {
-        public string _amxFile = null;
-        public AMX amx;
+        public string m_AmxFile = null;
+        public AMX m_Amx;
+        public bool m_isFs;
 
 
         public Script(string _amxFile, bool _isFilterscript = false)
         {
-            this._amxFile = _amxFile;
+            this.m_AmxFile = _amxFile;
             try
             {
-                amx = new AMX("Scripts/" + _amxFile + ".amx");
+                m_Amx = new AMX("Scripts/" + _amxFile + ".amx");
             }
             catch (Exception e)
             {
@@ -25,23 +26,24 @@ namespace telepawn.Scripting
                 return;
             }
 
-            amx.LoadLibrary(AMXDefaultLibrary.Core);
+            m_Amx.LoadLibrary(AMXDefaultLibrary.Core);
 
-            amx.LoadLibrary(AMXDefaultLibrary.String);
-            amx.LoadLibrary(AMXDefaultLibrary.Console);
-            amx.LoadLibrary(AMXDefaultLibrary.DGram);
-            amx.LoadLibrary(AMXDefaultLibrary.Float);
-            amx.LoadLibrary(AMXDefaultLibrary.Time);
-            amx.LoadLibrary(AMXDefaultLibrary.Fixed);
+            m_Amx.LoadLibrary(AMXDefaultLibrary.String);
+            m_Amx.LoadLibrary(AMXDefaultLibrary.Console);
+            m_Amx.LoadLibrary(AMXDefaultLibrary.DGram);
+            m_Amx.LoadLibrary(AMXDefaultLibrary.Float);
+            m_Amx.LoadLibrary(AMXDefaultLibrary.Time);
+            m_Amx.LoadLibrary(AMXDefaultLibrary.Fixed);
             this.RegisterNatives();
 
             Program.m_Scripts.Add(this);
 
             if (_isFilterscript)
             {
+                this.m_isFs = _isFilterscript;
                 Utils.Log.Debug("Loading filterscript as ID: " + (Program.m_Scripts.Count - 1), this);
                 AMXPublic p = null;
-                p = amx.FindPublic("OnFilterscriptInit");
+                p = m_Amx.FindPublic("OnFilterscriptInit");
                 if (p != null)
                 {
                     p.Execute();
@@ -52,7 +54,7 @@ namespace telepawn.Scripting
             else
             {
                 Utils.Log.Debug("Loading script as main script, ID 0.", this);
-                AMXWrapper.AMXPublic pub = Program.m_Scripts[0].amx.FindPublic("OnInit");
+                AMXWrapper.AMXPublic pub = Program.m_Scripts[0].m_Amx.FindPublic("OnInit");
                 if (pub != null) pub.Execute();
             }
             
@@ -70,16 +72,18 @@ namespace telepawn.Scripting
 
         public bool RegisterNatives()
         {
-            amx.Register("printc", (amx1, args1) => Natives.printc(amx1, args1, this));
+            m_Amx.Register("printc", (amx1, args1) => Natives.printc(amx1, args1, this));
 
-            amx.Register("Loadscript", (amx1, args1) => Natives.Loadscript(amx1, args1, this));
-            amx.Register("Unloadscript", (amx1, args1) => Natives.Unloadscript(amx1, args1, this));
-            amx.Register("SetTimer", (amx1, args1) => Natives.SetTimer(amx1, args1, this));
-            amx.Register("KillTimer", (amx1, args1) => Natives.KillTimer(amx1, args1, this));
-            amx.Register("gettimestamp", (amx1, args1) => Natives.gettimestamp(amx1, args1, this));
-            amx.Register("strequals", (amx1, args1) => Natives.strequals(amx1, args1, this));
+            m_Amx.Register("Loadscript", (amx1, args1) => Natives.Loadscript(amx1, args1, this));
+            m_Amx.Register("Unloadscript", (amx1, args1) => Natives.Unloadscript(amx1, args1, this));
+            m_Amx.Register("SetTimer", (amx1, args1) => Natives.SetTimer(amx1, args1, this));
+            m_Amx.Register("KillTimer", (amx1, args1) => Natives.KillTimer(amx1, args1, this));
+            m_Amx.Register("gettimestamp", (amx1, args1) => Natives.gettimestamp(amx1, args1, this));
+            m_Amx.Register("strequals", (amx1, args1) => Natives.strequals(amx1, args1, this));
 
-            amx.Register("SendChatMessage", (amx1, args1) => Natives.SendChatMessage(amx1, args1, this));
+            m_Amx.Register("SendChatMessage", (amx1, args1) => Natives.SendChatMessage(amx1, args1, this));
+            m_Amx.Register("GetBotUserName", (amx1, args1) => Natives.GetBotUserName(amx1, args1, this));
+            m_Amx.Register("GetBotFirstLastName", (amx1, args1) => Natives.GetBotUserName(amx1, args1, this));
             return true;
         }
     }

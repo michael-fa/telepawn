@@ -62,30 +62,45 @@ namespace telepawn.Telegram
 
         public async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
         {
-            if (update.Message is Message message)
-            {
-                Utils.Log.Debug("Received message ( " + message.Type.ToString() + " ) : " + message.Text);
-                switch (message.Type)
-                {
-                    case MessageType.Text:
-                        //await botClient.SendTextMessageAsync(message.Chat, "Hello");
-                        AMXPublic p = Program.m_Scripts[0].amx.FindPublic("OnTelegramMessage");
-                        var tmp = p.AMX.Push(message.Text);
-                        var tmp2 = p.AMX.Push(message.Chat.Id.ToString());
-                        if (p != null) p.Execute();
-                        p.AMX.Release(tmp);
-                        p.AMX.Release(tmp2);
-                        break;
-                }
+            await Task.Run(() => {
 
-            }
+                if (update.Message is Message message)
+                {
+                    Utils.Log.Debug("Received message ( " + message.Type.ToString() + " ) : " + message.Text);
+                    switch (message.Type)
+                    {
+                        case MessageType.Text:
+                            //await botClient.SendTextMessageAsync(message.Chat, "Hello");
+                            AMXPublic p = Program.m_Scripts[0].m_Amx.FindPublic("OnTelegramMessage");
+                            var tmp = p.AMX.Push(message.Text);
+                            var tmp2 = p.AMX.Push(message.Chat.Id.ToString());
+                            if (p != null) p.Execute();
+                            p.AMX.Release(tmp);
+                            p.AMX.Release(tmp2);
+                            break;
+                    }
+                }
+            });
         }
 
         public async Task HandleErrorAsync(ITelegramBotClient botClient, Exception exception, CancellationToken cancellationToken)
         {
+            //Untested but should work somehow.
             if (exception is ApiRequestException apiRequestException)
             {
-                await botClient.SendTextMessageAsync(123, apiRequestException.ToString());
+
+                await Task.Run(() =>
+                {
+                    Utils.Log.Debug("Telegram exception " + apiRequestException.ToString() + ": " + apiRequestException.Message + "  at  " + apiRequestException.Source);
+                    
+                    AMXPublic p = Program.m_Scripts[0].m_Amx.FindPublic("OnTelegramError");
+                    var tmp1 = p.AMX.Push(apiRequestException.Message);
+                    var tmp2 = p.AMX.Push(apiRequestException.Source);
+                    p.AMX.Push(apiRequestException.ErrorCode);
+                    if (p != null) p.Execute();
+                    p.AMX.Release(tmp1);
+                    p.AMX.Release(tmp2);
+                });
             }
         }
     }
