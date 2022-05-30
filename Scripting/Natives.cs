@@ -179,10 +179,14 @@ namespace telepawn.Scripting
         public static int SendChatMessage(AMX amx1, AMXArgumentList args1, Script caller_script)
         {
             if (args1.Length != 2) return 0;
-            //Console.Write("\nChatID " + Convert.ToString(args1[0].AsString()));
-            var x = Program.m_TelegramHandle.m_TelegramBotClient.SendTextMessageAsync(Convert.ToString(args1[0].AsString()), Convert.ToString(args1[1].AsString()));
-            //Program.m_TelegramHandle.m_TelegramBotClient.DeleteMessageAsync()
+            Program.m_TelegramHandle.m_TelegramBotClient.SendTextMessageAsync(Convert.ToString(args1[0].AsString()), Convert.ToString(args1[1].AsString()));
+            return 1;
+        }
 
+        public static int DeleteChatMessage(AMX amx1, AMXArgumentList args1, Script caller_script)
+        {
+            if (args1.Length != 2) return 0;
+            var x = Program.m_TelegramHandle.m_TelegramBotClient.DeleteMessageAsync(Convert.ToString(args1[0].AsString()), args1[1].AsInt32());
             return 1;
         }
     }

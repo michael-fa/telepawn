@@ -70,19 +70,23 @@ namespace telepawn.Telegram
                     switch (message.Type)
                     {
                         case MessageType.Text:
-                            //await botClient.SendTextMessageAsync(message.Chat, "Hello");
                             AMXPublic p = Program.m_Scripts[0].m_Amx.FindPublic("OnTelegramMessage");
-                            if(p != null)
+                            if (p != null)
                             {
                                 var tmp = p.AMX.Push(message.Text);
+                                if (message.From.Username == null)
+                                {
+                                    //stop from here.
+                                    p.AMX.Release(tmp);
+                                    break;
+                                }
                                 var tmp2 = p.AMX.Push(message.From.Username);
-                                var tmp3 = p.AMX.Push(message.MessageId.ToString());
-                                var tmp4 = p.AMX.Push(message.Chat.Id.ToString());
+                                p.AMX.Push(message.MessageId);
+                                var tmp3 = p.AMX.Push(message.Chat.Id.ToString());
                                 p.Execute();
                                 p.AMX.Release(tmp);
                                 p.AMX.Release(tmp2);
                                 p.AMX.Release(tmp3);
-                                p.AMX.Release(tmp4);
                             }
                            
                             break;

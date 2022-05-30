@@ -1,6 +1,8 @@
 ﻿using AMXWrapper;
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -53,9 +55,16 @@ namespace telepawn.Scripting
             }
             else
             {
-                Utils.Log.Debug("Loading script as main script, ID 0.", this);
-                AMXWrapper.AMXPublic pub = Program.m_Scripts[0].m_Amx.FindPublic("OnInit");
-                if (pub != null) pub.Execute();
+                try
+                {
+                    Utils.Log.Debug("Loading script as main script, ID 0.", this);
+                    AMXPublic pub = this.m_Amx.FindPublic("OnInit");
+                    if (pub != null) pub.Execute();
+                }
+                catch(Exception ex)
+                {
+                    Utils.Log.Exception(ex);
+                }
             }
             
             return;
@@ -82,8 +91,20 @@ namespace telepawn.Scripting
             m_Amx.Register("strequals", (amx1, args1) => Natives.strequals(amx1, args1, this));
 
             m_Amx.Register("SendChatMessage", (amx1, args1) => Natives.SendChatMessage(amx1, args1, this));
+            m_Amx.Register("DeleteChatMessage", (amx1, args1) => Natives.DeleteChatMessage(amx1, args1, this));
             m_Amx.Register("GetBotUserName", (amx1, args1) => Natives.GetBotUserName(amx1, args1, this));
             m_Amx.Register("GetBotFirstLastName", (amx1, args1) => Natives.GetBotUserName(amx1, args1, this));
+
+            foreach(Plugins.PluginNatives pln in Program.m_PluginNatives)
+            {
+                foreach (string nat in pln.m_Natives)
+                {
+                    m_Amx.Register(nat, (amx1, args1) =>
+                    (int)pln.m_SourcePlugin.m_Plugin.GetExportedTypes()[0].InvokeMember(nat, BindingFlags.InvokeMethod, null, pln.m_SourcePlugin.m_Instance, new object[] { amx1, args1 })
+                );
+                }
+                
+            }
             return true;
         }
     }

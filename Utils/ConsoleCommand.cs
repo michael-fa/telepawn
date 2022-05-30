@@ -18,6 +18,7 @@ namespace telepawn.Utils
         public static void Loop()
         {
             string wholecmd = Console.ReadLine(); //System.InvalidOperationException 
+            if (wholecmd == null) return;
             string[] cmd = wholecmd.Split(' ');
             if (cmd.Length > 0)
             {

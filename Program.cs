@@ -10,7 +10,7 @@ using System.Text.RegularExpressions;
 
 namespace telepawn
 {
-    class Program
+    public class Program
     {
         //Coreinfo
         static bool m_isWindows;
@@ -20,6 +20,7 @@ namespace telepawn
         public static List<Scripting.ScriptTimer> m_ScriptTimers = null;
         public static List<Plugins.Plugin> m_Plugins = null;
         public static List<Scripting.Script> m_Scripts = null;
+        public static List<Plugins.PluginNatives> m_PluginNatives = null;
       
         public struct Settings
         {
@@ -93,21 +94,22 @@ namespace telepawn
             if (m_Settings._clientMode)
                 Log.Info("INIT: -> Running in TELEGRAM CLIENT mode!");
 
-            //Load all plugins (extensions)
+
+            //PREPARE (not loading!) all plugins (extensions)
             try
             {
                 foreach (string fl in Directory.GetFiles("Plugins/"))
                 {
                     // demand load main.amx     ||  skip this file
                     if (!fl.EndsWith(".dll")) continue;
-                    Log.Info("[CORE] Found plugin: '" + fl + "' !");
+                    Utils.Log.Info("[CORE] Found plugin: '" + fl + "' !");
                     new Plugins.Plugin(fl);
                 }
             }
             catch (Exception ex)
             {
-                Log.Exception(ex);
-                StopSafely();
+                Utils.Log.Exception(ex);
+                Program.StopSafely();
                 return;
             }
 
@@ -121,6 +123,7 @@ namespace telepawn
             }
             else new Script(Program.m_Settings._firstScript);
 
+            PluginTools.LoadAllPlugins();
 
             //Now add all filterscripts
             try
@@ -193,6 +196,7 @@ namespace telepawn
             //Setting everything up
            
             Program.m_ScriptTimers = new List<Scripting.ScriptTimer>();
+            Program.m_PluginNatives = new List<Plugins.PluginNatives>();   //Create list for scripts
             Program.m_Plugins = new List<Plugins.Plugin>();   //Create list for plugins
             Program.m_Scripts = new List<Scripting.Script>();   //Create list for scripts
 
