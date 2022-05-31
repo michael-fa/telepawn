@@ -18,21 +18,19 @@ main()
 
 public OnInit()
 {
-    printc("OnInit");
+    print("OnInit");
     return 1;
 }
 
 public OnUnload()
 {
-    printc("OnUnload");
+    print("OnUnload");
     return 1;
 }
 
-public OnTelegramMessage(userid[], message[])
+public OnTelegramMessage(chatid[], messageid, username[], message[])
 {
-    new str[32];
-    strformat(str, sizeof(str), true, "Got message: %s from %s", message, userid);
-    print(str);
+    printf(Got message: %s from %s", message, userid);
     SendChatMessage(userid, "Whatever you said, I received it, and it's awesome!");
     return 1;
 }
