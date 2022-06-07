@@ -92,10 +92,13 @@ namespace telepawn.Scripting
 
             m_Amx.Register("SendChatMessage", (amx1, args1) => Natives.SendChatMessage(amx1, args1, this));
             m_Amx.Register("DeleteChatMessage", (amx1, args1) => Natives.DeleteChatMessage(amx1, args1, this));
+            m_Amx.Register("PinChatMessage", (amx1, args1) => Natives.PinChatMessage(amx1, args1, this));
+            m_Amx.Register("UnpinChatMessage", (amx1, args1) => Natives.UnpinChatMessage(amx1, args1, this));
             m_Amx.Register("GetBotUserName", (amx1, args1) => Natives.GetBotUserName(amx1, args1, this));
             m_Amx.Register("GetBotFirstLastName", (amx1, args1) => Natives.GetBotUserName(amx1, args1, this));
 
-            foreach(Plugins.PluginNatives pln in Program.m_PluginNatives)
+            //Very ugly, but it works.
+            foreach (Plugins.PluginNatives pln in Program.m_PluginNatives)
             {
                 foreach (string nat in pln.m_Natives)
                 {

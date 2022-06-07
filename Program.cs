@@ -123,8 +123,6 @@ namespace telepawn
             }
             else new Script(Program.m_Settings._firstScript);
 
-            PluginTools.LoadAllPlugins();
-
             //Now add all filterscripts
             try
             {
@@ -144,6 +142,9 @@ namespace telepawn
                 return;
             }
 
+
+            //We first want to prefetch (only call constructor methods, returning us the natives) and then, above, load all the scripts and finally "really load" the plugins.
+            PluginTools.LoadAllPlugins();
 
         //Handle commands.
         _CMDLOOP:
@@ -171,7 +172,8 @@ namespace telepawn
             {
                 FileStream xx = File.Create("config.ini");
                 xx.Close();
-                File.AppendAllText("config.ini", "# (C) 2022 fanter.eu - TELEPAWN\n\n# This is your first server config - the \"core\" section has to be set before you consider running the bot!");
+                xx.Dispose();
+                File.AppendAllText("config.ini", "# (C) 2022 fanter.eu - TELEPAWN\n\n# This is your server config - the \"core\" section has to be set before you consider running the bot!");
             }
 
             //"Scan" the config file before using it.

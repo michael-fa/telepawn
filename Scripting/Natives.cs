@@ -179,14 +179,42 @@ namespace telepawn.Scripting
         public static int SendChatMessage(AMX amx1, AMXArgumentList args1, Script caller_script)
         {
             if (args1.Length != 2) return 0;
-            Program.m_TelegramHandle.m_TelegramBotClient.SendTextMessageAsync(Convert.ToString(args1[0].AsString()), Convert.ToString(args1[1].AsString()));
+            Task.Run(async () =>
+            {
+                await Program.m_TelegramHandle.m_TelegramBotClient.SendTextMessageAsync(Convert.ToString(args1[0].AsString()), Convert.ToString(args1[1].AsString())).ConfigureAwait(false);
+            });
             return 1;
         }
 
         public static int DeleteChatMessage(AMX amx1, AMXArgumentList args1, Script caller_script)
         {
             if (args1.Length != 2) return 0;
-            var x = Program.m_TelegramHandle.m_TelegramBotClient.DeleteMessageAsync(Convert.ToString(args1[0].AsString()), args1[1].AsInt32());
+            Task.Run(async () =>
+            {
+                await Program.m_TelegramHandle.m_TelegramBotClient.DeleteMessageAsync(Convert.ToString(args1[0].AsString()), args1[1].AsInt32()).ConfigureAwait(false);
+            });
+            return 1;
+        }
+
+        public static int PinChatMessage(AMX amx1, AMXArgumentList args1, Script caller_script)
+        {
+            if (args1.Length != 2) return 0;
+            Task.Run(async () =>
+            {
+                await Program.m_TelegramHandle.m_TelegramBotClient.PinChatMessageAsync(Convert.ToString(args1[0].AsString()), args1[1].AsInt32()).ConfigureAwait(false);
+            });
+            return 1;
+        }
+
+        public static int UnpinChatMessage(AMX amx1, AMXArgumentList args1, Script caller_script)
+        {
+            if (args1.Length != 2) return 0;
+            Task.Run(async () =>
+            {
+                await Program.m_TelegramHandle.m_TelegramBotClient.UnpinChatMessageAsync(Convert.ToString(args1[0].AsString()), args1[1].AsInt32()).ConfigureAwait(false);
+            });
+
+
             return 1;
         }
     }

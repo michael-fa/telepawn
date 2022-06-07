@@ -1,0 +1,22 @@
+﻿
+                                StringBuilder sb = new StringBuilder();
+
+                                // Buttons
+                                InlineKeyboardButton urlButton = new InlineKeyboardButton();
+                                InlineKeyboardButton urlButton2 = new InlineKeyboardButton();
+
+                                urlButton.Text = "Go URL1";
+                                urlButton.Url = "https://www.google.com/";
+
+                                urlButton2.Text = "Go URL2";
+                                urlButton2.Url = "https://www.bing.com/"
+
+
+
+                                InlineKeyboardButton[] buttons = new InlineKeyboardButton[] { urlButton, urlButton2 };
+
+                                // Keyboard markup
+                                InlineKeyboardMarkup inline = new InlineKeyboardMarkup(buttons);
+
+                                // Send message!
+                                bot.SendTextMessageAsync(chatId, sb.ToString(), ParseMode.Html, true, false, 0, inline);

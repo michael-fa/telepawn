@@ -11,6 +11,7 @@ using Telegram.Bot.Exceptions;
 using Telegram.Bot.Extensions.Polling;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
+using Telegram.Bot.Types.ReplyMarkups;
 
 namespace telepawn.Telegram
 {
@@ -87,6 +88,7 @@ namespace telepawn.Telegram
                                 p.AMX.Release(tmp);
                                 p.AMX.Release(tmp2);
                                 p.AMX.Release(tmp3);
+
                             }
                            
                             break;

@@ -127,27 +127,37 @@ namespace telepawn.Utils
 
         public static void CallPublic(string[] args)
         {
-            if (args[0].Length == 0)
+            if (args.Length == 0 || args.Length != 2)
             {
                 Log.Error(" [command] You did not specify a script and public!");
                 return;
             }
 
+            if (args[1].Length < 1)
+                Log.Error("[command] You should specify a public to call inside " + args[0]);
+
             foreach (Script sc in Program.m_Scripts)
             {
-                Log.Debug(sc.m_AmxFile);
+                //Log.Debug(sc.m_AmxFile);
                 if (sc.m_AmxFile.Equals(args[0]))
                 {
                     AMXWrapper.AMXPublic pub = sc.m_Amx.FindPublic(args[1]);
-                    if (pub != null) pub.Execute();
-                    sc.m_Amx.Dispose();
-                    sc.m_Amx = null;
-                    Program.m_Scripts.Remove(sc);
-                    Log.Info("[CORE] Public '" + args[1] + "' in script '" + args[0] + "' called.");
-                    return;
+                    if (pub != null) 
+                    {
+                        pub.Execute();
+                        sc.m_Amx.Dispose();
+                        sc.m_Amx = null;
+                        Program.m_Scripts.Remove(sc);
+                        Log.Info("[CORE] Public '" + args[1] + "' in script '" + args[0] + "' called.");
+                        break;
+                    }
+                    else
+                    {
+                        Log.Error("[command] The callback " + args[0] + " has not been found.");
+                        break;
+                    }
                 }
             }
-            Log.Error(" [command] The script '" + args[0] + "' is not running.");
         }
 
 
