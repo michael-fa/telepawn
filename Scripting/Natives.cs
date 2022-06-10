@@ -13,7 +13,7 @@ using Telegram.Bot.Exceptions;
 using Telegram.Bot.Extensions.Polling;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
-
+using System.Diagnostics;
 
 namespace telepawn.Scripting
 {
@@ -146,12 +146,13 @@ namespace telepawn.Scripting
             if (args1.Length != 1) return 0;
             try
             {
+                Debug.WriteLine(Program.m_TelegramHandle.m_User.Username);
                 AMX.SetString(args1[0].AsCellPtr(), Program.m_TelegramHandle.m_User.Username, true);
             }
             catch (Exception ex)
             {
                 Utils.Log.Exception(ex, caller_script);
-                Utils.Log.Error("In native 'GetBotUserName' (dest_string must be an array, or received invalid parameters!)" + caller_script);
+                Utils.Log.Error("In native 'GetBotUserName' (dest_string must be an char array, or received invalid parameters!)" + caller_script);
             }
             return 1;
         }
@@ -169,7 +170,7 @@ namespace telepawn.Scripting
             catch (Exception ex)
             {
                 Utils.Log.Exception(ex, caller_script);
-                Utils.Log.Error("In native 'GetBotFirstLastName' (dest_string must be a array, or invalid parameters!)" + caller_script);
+                Utils.Log.Error("In native 'GetBotName' (dest_string must be an char array, or invalid parameters!)" + caller_script);
             }
             return 1;
         }
@@ -213,8 +214,37 @@ namespace telepawn.Scripting
             {
                 await Program.m_TelegramHandle.m_TelegramBotClient.UnpinChatMessageAsync(Convert.ToString(args1[0].AsString()), args1[1].AsInt32()).ConfigureAwait(false);
             });
+            return 1;
+        }
 
+        public static int UnpinAllChatMessages(AMX amx1, AMXArgumentList args1, Script caller_script)
+        {
+            if (args1.Length != 1) return 0;
+            Task.Run(async () =>
+            {
+                await Program.m_TelegramHandle.m_TelegramBotClient.UnpinAllChatMessages(Convert.ToString(args1[0].AsString())).ConfigureAwait(false);
+            });
+            return 1;
+        }
 
+        public static int GetUserName(AMX amx1, AMXArgumentList args1, Script caller_script)
+        {
+            if (args1.Length != 2) return 0;
+            try
+            {
+                var res = Task.Run(async () =>
+                {
+                    Chat _Chat = await Program.m_TelegramHandle.m_TelegramBotClient.GetChatAsync(args1[0].AsString()).ConfigureAwait(false);
+                    //
+                    return _Chat.Username.ToString();
+                });
+                AMX.SetString(args1[1].AsCellPtr(), res.Result, true); 
+            }
+            catch (Exception ex)
+            {
+                Utils.Log.Exception(ex, caller_script);
+                Utils.Log.Error("In native 'GetUserName' (dest_string must be an char array, or invalid parameters!)" + caller_script);
+            }
             return 1;
         }
     }

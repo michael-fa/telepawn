@@ -67,21 +67,17 @@ namespace telepawn.Telegram
 
                 if (update.Message is Message message)
                 {
-                    Utils.Log.Debug("Received message ( " + message.Type.ToString() + " ) : " + message.Text);
                     switch (message.Type)
                     {
                         case MessageType.Text:
                             AMXPublic p = Program.m_Scripts[0].m_Amx.FindPublic("OnTelegramMessage");
                             if (p != null)
                             {
-                                var tmp = p.AMX.Push(message.Text);
-                                if (message.From.Username == null)
-                                {
-                                    //stop from here.
-                                    p.AMX.Release(tmp);
+                                if (message.From == null)
                                     break;
-                                }
-                                var tmp2 = p.AMX.Push(message.From.Username);
+
+                                var tmp = p.AMX.Push(message.Text);
+                                var tmp2 = p.AMX.Push(message.From.Id.ToString());
                                 p.AMX.Push(message.MessageId);
                                 var tmp3 = p.AMX.Push(message.Chat.Id.ToString());
                                 p.Execute();
@@ -89,8 +85,45 @@ namespace telepawn.Telegram
                                 p.AMX.Release(tmp2);
                                 p.AMX.Release(tmp3);
 
+                                Utils.Log.Debug("Received message ( " + message.Type.ToString() + " ) : " + message.Text);
+
                             }
-                           
+                            break;
+
+                        case MessageType.ChatMembersAdded:
+                            foreach(User user in message.NewChatMembers)
+                            {
+                                Utils.Log.Debug("Received message ( " + message + " ) : " + user.Username);
+
+                               /* p = Program.m_Scripts[0].m_Amx.FindPublic("OnChatMemberAdded");
+                                if (p != null)
+                                {
+                                    var tmp = p.AMX.Push(message.Text);
+                                    if (message.From.Username == null)
+                                    {
+                                        //stop from here.
+                                        p.AMX.Release(tmp);
+                                        break;
+                                    }
+                                    var tmp2 = p.AMX.Push(user.Username);
+                                    p.AMX.Push(message.MessageId);
+                                    var tmp3 = p.AMX.Push(message.Chat.Id.ToString());
+                                    p.Execute();
+                                    p.AMX.Release(tmp);
+                                    p.AMX.Release(tmp2);
+                                    p.AMX.Release(tmp3);
+
+                                    Utils.Log.Debug("Received message ( " + message.Type.ToString() + " ) : " + message.Text);
+
+                                }*/
+                                break;
+                            }
+
+                            break;
+
+                        case MessageType.ChatMemberLeft:
+                            Utils.Log.Debug("Received message ( " + message + " ) : " + message.LeftChatMember.Username);
+
                             break;
                     }
                 }

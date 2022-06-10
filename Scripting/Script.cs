@@ -38,6 +38,8 @@ namespace telepawn.Scripting
             m_Amx.LoadLibrary(AMXDefaultLibrary.Fixed);
             this.RegisterNatives();
 
+            this.m_Amx.ExecuteMain();
+
             Program.m_Scripts.Add(this);
 
             if (_isFilterscript)
@@ -94,8 +96,12 @@ namespace telepawn.Scripting
             m_Amx.Register("DeleteChatMessage", (amx1, args1) => Natives.DeleteChatMessage(amx1, args1, this));
             m_Amx.Register("PinChatMessage", (amx1, args1) => Natives.PinChatMessage(amx1, args1, this));
             m_Amx.Register("UnpinChatMessage", (amx1, args1) => Natives.UnpinChatMessage(amx1, args1, this));
+            m_Amx.Register("UnpinAllChatMessage", (amx1, args1) => Natives.UnpinChatMessage(amx1, args1, this));
+
+            m_Amx.Register("GetUserName", (amx1, args1) => Natives.GetUserName(amx1, args1, this));
+
             m_Amx.Register("GetBotUserName", (amx1, args1) => Natives.GetBotUserName(amx1, args1, this));
-            m_Amx.Register("GetBotFirstLastName", (amx1, args1) => Natives.GetBotUserName(amx1, args1, this));
+            m_Amx.Register("GetBotName", (amx1, args1) => Natives.GetBotUserName(amx1, args1, this));
 
             //Very ugly, but it works.
             foreach (Plugins.PluginNatives pln in Program.m_PluginNatives)
