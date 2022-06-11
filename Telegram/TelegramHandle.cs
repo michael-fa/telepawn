@@ -63,6 +63,7 @@ namespace telepawn.Telegram
 
         public async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
         {
+            Utils.Log.Debug("[RAW] Telegram Update (" + update.Message.Type + ") received.. ");
             await Task.Run(() => {
 
                 if (update.Message is Message message)
@@ -78,7 +79,7 @@ namespace telepawn.Telegram
                                 if (p != null)
                                 {
                                     if (message.From == null)
-                                        break;
+                                        continue;
 
                                     var tmp = p.AMX.Push(message.Text);
                                     var tmp2 = p.AMX.Push(message.From.Id.ToString());
@@ -88,9 +89,6 @@ namespace telepawn.Telegram
                                     p.AMX.Release(tmp);
                                     p.AMX.Release(tmp2);
                                     p.AMX.Release(tmp3);
-
-                                    Utils.Log.Debug("Received message ( " + message.Type.ToString() + " ) : " + message.Text);
-
                                 }
                             }
                             
@@ -98,39 +96,36 @@ namespace telepawn.Telegram
                             break;
 
                         case MessageType.ChatMembersAdded:
-                            foreach(User user in message.NewChatMembers)
+                            foreach (User user in message.NewChatMembers)
                             {
-                                Utils.Log.Debug("Received message ( " + message + " ) : " + user.Username);
-
-                               /* p = Program.m_Scripts[0].m_Amx.FindPublic("OnChatMemberAdded");
-                                if (p != null)
+                                foreach (Scripting.Script scr in Program.m_Scripts)
                                 {
-                                    var tmp = p.AMX.Push(message.Text);
-                                    if (message.From.Username == null)
-                                    {
-                                        //stop from here.
-                                        p.AMX.Release(tmp);
-                                        break;
-                                    }
-                                    var tmp2 = p.AMX.Push(user.Username);
-                                    p.AMX.Push(message.MessageId);
+                                    p = Program.m_Scripts[0].m_Amx.FindPublic("OnChatMemberAdded");
+
+                                    if (p == null || message.From == null) continue;
+
+                                    var tmp = p.AMX.Push(user.Id.ToString());
                                     var tmp3 = p.AMX.Push(message.Chat.Id.ToString());
                                     p.Execute();
                                     p.AMX.Release(tmp);
-                                    p.AMX.Release(tmp2);
                                     p.AMX.Release(tmp3);
-
-                                    Utils.Log.Debug("Received message ( " + message.Type.ToString() + " ) : " + message.Text);
-
-                                }*/
-                                break;
+                                }
                             }
-
                             break;
 
                         case MessageType.ChatMemberLeft:
-                            Utils.Log.Debug("Received message ( " + message + " ) : " + message.LeftChatMember.Username);
+                            foreach (Scripting.Script scr in Program.m_Scripts)
+                            {
+                                p = Program.m_Scripts[0].m_Amx.FindPublic("OnChatMemberLeft");
 
+                                if (p == null || message.From == null) continue;
+
+                                var tmp = p.AMX.Push(message.LeftChatMember.Id.ToString());
+                                var tmp3 = p.AMX.Push(message.Chat.Id.ToString());
+                                p.Execute();
+                                p.AMX.Release(tmp);
+                                p.AMX.Release(tmp3);
+                            }
                             break;
                     }
                 }

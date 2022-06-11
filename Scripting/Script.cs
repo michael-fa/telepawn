@@ -101,7 +101,8 @@ namespace telepawn.Scripting
             m_Amx.Register("GetUserName", (amx1, args1) => Natives.GetUserName(amx1, args1, this));
 
             m_Amx.Register("GetBotUserName", (amx1, args1) => Natives.GetBotUserName(amx1, args1, this));
-            m_Amx.Register("GetBotName", (amx1, args1) => Natives.GetBotUserName(amx1, args1, this));
+            m_Amx.Register("GetBotName", (amx1, args1) => Natives.GetBotName(amx1, args1, this));
+            m_Amx.Register("GetUserBio", (amx1, args1) => Natives.GetUserBio(amx1, args1, this));
 
             //Very ugly, but it works.
             foreach (Plugins.PluginNatives pln in Program.m_PluginNatives)

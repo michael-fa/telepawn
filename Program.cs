@@ -100,7 +100,6 @@ namespace telepawn
             {
                 foreach (string fl in Directory.GetFiles("Plugins/"))
                 {
-                    // demand load main.amx     ||  skip this file
                     if (!fl.EndsWith(".dll")) continue;
                     Utils.Log.Info("[CORE] Found plugin: '" + fl + "' !");
                     new Plugins.Plugin(fl);
