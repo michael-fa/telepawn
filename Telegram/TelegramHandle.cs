@@ -70,24 +70,31 @@ namespace telepawn.Telegram
                     switch (message.Type)
                     {
                         case MessageType.Text:
-                            AMXPublic p = Program.m_Scripts[0].m_Amx.FindPublic("OnTelegramMessage");
-                            if (p != null)
+
+                            AMXPublic p;
+                            foreach (Scripting.Script scr in Program.m_Scripts)
                             {
-                                if (message.From == null)
-                                    break;
+                                p = scr.m_Amx.FindPublic("OnTelegramMessage");
+                                if (p != null)
+                                {
+                                    if (message.From == null)
+                                        break;
 
-                                var tmp = p.AMX.Push(message.Text);
-                                var tmp2 = p.AMX.Push(message.From.Id.ToString());
-                                p.AMX.Push(message.MessageId);
-                                var tmp3 = p.AMX.Push(message.Chat.Id.ToString());
-                                p.Execute();
-                                p.AMX.Release(tmp);
-                                p.AMX.Release(tmp2);
-                                p.AMX.Release(tmp3);
+                                    var tmp = p.AMX.Push(message.Text);
+                                    var tmp2 = p.AMX.Push(message.From.Id.ToString());
+                                    p.AMX.Push(message.MessageId);
+                                    var tmp3 = p.AMX.Push(message.Chat.Id.ToString());
+                                    p.Execute();
+                                    p.AMX.Release(tmp);
+                                    p.AMX.Release(tmp2);
+                                    p.AMX.Release(tmp3);
 
-                                Utils.Log.Debug("Received message ( " + message.Type.ToString() + " ) : " + message.Text);
+                                    Utils.Log.Debug("Received message ( " + message.Type.ToString() + " ) : " + message.Text);
 
+                                }
                             }
+                            
+                            
                             break;
 
                         case MessageType.ChatMembersAdded:
@@ -139,18 +146,23 @@ namespace telepawn.Telegram
                 await Task.Run(() =>
                 {
                     Utils.Log.Debug("Telegram exception " + apiRequestException.ToString() + ": " + apiRequestException.Message + "  at  " + apiRequestException.Source);
-                    
-                    AMXPublic p = Program.m_Scripts[0].m_Amx.FindPublic("OnTelegramError");
 
-                    if(p != null)
+                    AMXPublic p;
+                    foreach (Scripting.Script scr in Program.m_Scripts)
                     {
-                        var tmp1 = p.AMX.Push(apiRequestException.Message);
-                        var tmp2 = p.AMX.Push(apiRequestException.Source);
-                        p.AMX.Push(apiRequestException.ErrorCode);
-                        p.Execute();
-                        p.AMX.Release(tmp1);
-                        p.AMX.Release(tmp2);
+                        p = scr.m_Amx.FindPublic("OnTelegramError");
+                        
+                        if (p != null)
+                        {
+                            var tmp1 = p.AMX.Push(apiRequestException.Message);
+                            var tmp2 = p.AMX.Push(apiRequestException.Source);
+                            p.AMX.Push(apiRequestException.ErrorCode);
+                            p.Execute();
+                            p.AMX.Release(tmp1);
+                            p.AMX.Release(tmp2);
+                        }
                     }
+                    
                     
                 });
             }
