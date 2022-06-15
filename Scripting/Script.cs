@@ -48,7 +48,10 @@ namespace telepawn.Scripting
                 p = m_Amx.FindPublic("OnFilterscriptInit");
                 if (p != null)
                 {
+                    var x = p.AMX.Push(Program.m_TelegramHandle.m_TelegramBotClient.BotId.ToString());
+
                     p.Execute();
+                    p.AMX.Release(x);
 
                 }
                 
@@ -60,8 +63,16 @@ namespace telepawn.Scripting
                 try
                 {
                     Utils.Log.Debug("Loading script as main script, ID 0.", this);
-                    AMXPublic pub = this.m_Amx.FindPublic("OnInit");
-                    if (pub != null) pub.Execute();
+                    AMXPublic p = this.m_Amx.FindPublic("OnInit");
+
+
+                    if (p != null)
+                    {
+                        var x = p.AMX.Push(Program.m_TelegramHandle.m_TelegramBotClient.BotId.ToString());
+
+                        p.AMX.Release(x);
+                        p.Execute();
+                    }
                 }
                 catch(Exception ex)
                 {
