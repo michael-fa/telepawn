@@ -40,7 +40,7 @@ public OnTelegramMessage(chatid[], messageid, username[], message[])
 
 ## :construction: EARLY ALPHA
 
-The whole project is still in its super early alpha, meaning there will be many changes and if you are not experienced in PAWN Scripting you should come back later! Leave a watch! 
+The whole project is still in its alpha, meaning there will be many changes and if you are not somewhat familiar with PAWN Scripting you should come back later. You can test stuff, read the [Wiki](https://github.com/michael-fa/telepawn/wiki) for easy entry. ** Just keep in mind that functions and other things may change are be removed completely, so keep the bot updated.
 
 ## Testers
 The current RELEASE is meant for experienced scripters and is only for pure testing.
