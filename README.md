@@ -43,13 +43,12 @@ public OnTelegramMessage(chatid[], messageid, username[], message[])
 The whole project is still in its alpha, meaning there will be many changes and if you are not somewhat familiar with PAWN Scripting you should come back later. You can test stuff, read the [Wiki](https://github.com/michael-fa/telepawn/wiki) for easy entry. ** Just keep in mind that functions and other things may change are be removed completely, so keep the bot updated.
 
 ## Testers
-The current RELEASE is meant for experienced scripters and is only for pure testing.
+Even though I may forget to mention things or stuff will be changed over time, it should be kinda easy for anyone having done anything with scripting, game servers or something like that to set this up. Scripting is another thing, but it's basic, simple and almost plain logic.  
 Run it on windows and make sure you have <b>[.NET Runtime 4.8.*](https://dotnet.microsoft.com/en-us/download/dotnet-framework/net48)</b> ! 
 
 **If you are an experienced PAWN coder, and you're interested in testing this (given you have some knowledge about telegram bots too)
-I'll offer to host a bot for TESTERS -> I am currently looking for 2-3 official project testers!**
+I'll offer to host a bot for TESTERS -> I am currently looking for 2-3 official project testers that are able to test files asap when I send them. Asap meaning a test-result in 24 hours. **
 
-:warning: The current aim of this is self-hosting - remember: NOT SELF-BOT. You need (to rent) a (v)Server running either Linux or Windows on it for 24/7 runtime!
 Linux support is coming soon!
 
 
