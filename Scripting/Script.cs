@@ -29,16 +29,14 @@ namespace telepawn.Scripting
             }
 
             m_Amx.LoadLibrary(AMXDefaultLibrary.Core);
-
             m_Amx.LoadLibrary(AMXDefaultLibrary.String);
             m_Amx.LoadLibrary(AMXDefaultLibrary.Console);
             m_Amx.LoadLibrary(AMXDefaultLibrary.DGram);
             m_Amx.LoadLibrary(AMXDefaultLibrary.Float);
             m_Amx.LoadLibrary(AMXDefaultLibrary.Time);
             m_Amx.LoadLibrary(AMXDefaultLibrary.Fixed);
-            this.RegisterNatives();
 
-            this.m_Amx.ExecuteMain();
+            this.RegisterNatives();
 
             Program.m_Scripts.Add(this);
 
@@ -57,6 +55,9 @@ namespace telepawn.Scripting
             }
             else
             {
+
+                this.m_Amx.ExecuteMain();
+
                 try
                 {
                     Utils.Log.Debug("Loading script as main script, ID 0.", this);
