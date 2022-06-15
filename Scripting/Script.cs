@@ -92,6 +92,8 @@ namespace telepawn.Scripting
             m_Amx.Register("gettimestamp", (amx1, args1) => Natives.gettimestamp(amx1, args1, this));
             m_Amx.Register("strequals", (amx1, args1) => Natives.strequals(amx1, args1, this));
 
+            m_Amx.Register("IsChatPrivate", (amx1, args1) => Natives.IsChatPrivate(amx1, args1, this));
+            m_Amx.Register("GetChatDescription", (amx1, args1) => Natives.GetChatDescription(amx1, args1, this));
             m_Amx.Register("SendChatMessage", (amx1, args1) => Natives.SendChatMessage(amx1, args1, this));
             m_Amx.Register("DeleteChatMessage", (amx1, args1) => Natives.DeleteChatMessage(amx1, args1, this));
             m_Amx.Register("PinChatMessage", (amx1, args1) => Natives.PinChatMessage(amx1, args1, this));

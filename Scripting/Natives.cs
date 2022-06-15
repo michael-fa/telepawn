@@ -180,10 +180,11 @@ namespace telepawn.Scripting
         public static int SendChatMessage(AMX amx1, AMXArgumentList args1, Script caller_script)
         {
             if (args1.Length != 2) return 0;
-            Task.Run(async () =>
+            /*Task.Run(async () =>
             {
                 await Program.m_TelegramHandle.m_TelegramBotClient.SendTextMessageAsync(Convert.ToString(args1[0].AsString()), Convert.ToString(args1[1].AsString())).ConfigureAwait(false);
-            });
+            });*/
+            Program.m_TelegramHandle.m_TelegramBotClient.SendTextMessageAsync(Convert.ToString(args1[0].AsString()), Convert.ToString(args1[1].AsString()));
             return 1;
         }
 
@@ -194,6 +195,48 @@ namespace telepawn.Scripting
             {
                 await Program.m_TelegramHandle.m_TelegramBotClient.DeleteMessageAsync(Convert.ToString(args1[0].AsString()), args1[1].AsInt32()).ConfigureAwait(false);
             });
+            return 1;
+        }
+
+        public static int IsChatPrivate(AMX amx1, AMXArgumentList args1, Script caller_script)
+        {
+            if (args1.Length != 1) return 0;
+            try
+            {
+                var res = Task.Run(async () =>
+                {
+                    Chat _Chat = await Program.m_TelegramHandle.m_TelegramBotClient.GetChatAsync(args1[0].AsString()).ConfigureAwait(false);
+                    return _Chat;
+                });
+                if (res.Result.Title == null)
+                    return 1;
+                else return 0;
+            }
+            catch (Exception ex)
+            {
+                Utils.Log.Exception(ex, caller_script);
+                Utils.Log.Error("In native 'IsChatPrivate' (invalid parameter )" + caller_script);
+            }
+            return 1;
+        }
+
+        public static int GetChatDescription(AMX amx1, AMXArgumentList args1, Script caller_script)
+        {
+            if (args1.Length != 2) return 0;
+            try
+            {
+                var res = Task.Run(async () =>
+                {
+                    Chat _Chat = await Program.m_TelegramHandle.m_TelegramBotClient.GetChatAsync(args1[0].AsString()).ConfigureAwait(false);
+                    return _Chat.Description;
+                });
+                AMX.SetString(args1[1].AsCellPtr(), res.Result, true);
+            }
+            catch (Exception ex)
+            {
+                Utils.Log.Exception(ex, caller_script);
+                Utils.Log.Error("In native 'GetChatDescription' (dest_string must be an char array, invalid parameters, or you try to get description from a private chat)" + caller_script);
+            }
             return 1;
         }
 
