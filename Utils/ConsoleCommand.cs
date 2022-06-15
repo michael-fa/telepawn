@@ -188,8 +188,6 @@ namespace telepawn.Utils
                         return;
                     }
                     Script scr = new Script(args[0]);
-                    pub = scr.m_Amx.FindPublic("OnInit");
-                    if (pub != null) pub.Execute();
 
                     Log.Info("[CORE] Script '" + args[0] + "' reloaded.");
                     return;

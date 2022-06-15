@@ -63,7 +63,11 @@ namespace telepawn.Telegram
 
         public async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
         {
-            Utils.Log.Debug("[RAW] Telegram Update (" + update.Message.Type + ") received.. ");
+            if(update.Message == null)
+            {
+
+            }
+            else Utils.Log.Debug("[RAW] Telegram Update (" + update.Message.Type + ") received.. ");
             await Task.Run(() => {
 
                 if (update.Message is Message message)
