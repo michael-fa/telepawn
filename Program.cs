@@ -7,6 +7,7 @@ using System.IO;
 using telepawn.Utils;
 using telepawn.Scripting;
 using System.Text.RegularExpressions;
+using System.Diagnostics;
 
 namespace telepawn
 {
@@ -173,6 +174,18 @@ namespace telepawn
                 xx.Close();
                 xx.Dispose();
                 File.AppendAllText("config.ini", "# (C) 2022 fanter.eu - TELEPAWN\n\n# This is your server config - the \"core\" section has to be set before you consider running the bot!");
+                Log.Warning("[CORE] You don't have any bot token set up right now. Please edit the config.ini file in the bot's root folder.");
+                if(m_isWindows)
+                {
+                    Process.Start("notepad.exe", AppDomain.CurrentDomain.BaseDirectory + "/config.ini");
+                    Console.WriteLine("Press enter to continue (closing the program).");
+                    Console.Read();
+                    StopSafely();
+                }
+                else
+                {
+                    StopSafely();
+                }
             }
 
             //"Scan" the config file before using it.

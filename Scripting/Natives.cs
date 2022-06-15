@@ -215,7 +215,7 @@ namespace telepawn.Scripting
             catch (Exception ex)
             {
                 Utils.Log.Exception(ex, caller_script);
-                Utils.Log.Error("In native 'IsChatPrivate' (invalid parameter )" + caller_script);
+                Utils.Log.Error("In native 'IsChatPrivate' (invalid parameter)" + caller_script);
             }
             return 1;
         }
