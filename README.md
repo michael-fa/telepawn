@@ -14,9 +14,9 @@ main()
     print("Test TelePawn Script loaded!\n");
 }
 
-public OnInit()
+public OnInit(botid[])
 {
-    printf("OnInit\n");
+    printf("Bot with ID %s has been initialised.\n");
     return 1;
 }
 
