@@ -68,7 +68,7 @@ public OnConsoleInput(input[])
 
 ## :construction: EARLY ALPHA
 
-The whole project is still in its beta, meaning there will be many changes and if you are not somewhat familiar with PAWN Scripting you should come back later. You can test stuff, read the [Wiki](https://github.com/michael-fa/telepawn/wiki) for easy entry. ** Just keep in mind that functions and other things may change are be removed completely, so keep the bot updated.
+The whole project is still in its beta, meaning there will be many changes and if you are not somewhat familiar with PAWN Scripting you should come back later. You can test stuff, read the [Wiki](https://github.com/michael-fa/telepawn/wiki) for easy entry. **Just keep in mind that functions and other things may change are be removed completely, so keep the bot updated.**
 
 ## Testers
 Even though I may forget to mention things or stuff will be changed over time, it should be kinda easy for anyone having done anything with scripting, game servers or something like that to set this up. Scripting is another thing, but it's basic, simple and almost plain logic.  
