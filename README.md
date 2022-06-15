@@ -46,7 +46,7 @@ The whole project is still in its alpha, meaning there will be many changes and 
 Even though I may forget to mention things or stuff will be changed over time, it should be kinda easy for anyone having done anything with scripting, game servers or something like that to set this up. Scripting is another thing, but it's basic, simple and almost plain logic.  
 Run it on windows and make sure you have <b>[.NET Runtime 4.8.*](https://dotnet.microsoft.com/en-us/download/dotnet-framework/net48)</b> ! 
 
-**If you are an experienced PAWN coder, and you're interested in testing this (given you have some knowledge about telegram bots too)
+** If you are an experienced PAWN coder, and you're interested in testing this (given you have some knowledge about telegram bots too)
 I'll offer to host a bot for TESTERS -> I am currently looking for 2-3 official project testers that are able to test files asap when I send them. Asap meaning a test-result in 24 hours. **
 
 Linux support is coming soon!
