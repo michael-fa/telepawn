@@ -180,7 +180,7 @@ namespace telepawn.Scripting
             return 1;
         }
 
-        public static int IsChatPrivate(AMX amx1, AMXArgumentList args1, Script caller_script)
+        public static int GetChatType(AMX amx1, AMXArgumentList args1, Script caller_script)
         {
             if (args1.Length != 1) return 0;
             try
@@ -190,16 +190,27 @@ namespace telepawn.Scripting
                     Chat _Chat = await Program.m_TelegramHandle.m_TelegramBotClient.GetChatAsync(args1[0].AsString()).ConfigureAwait(false);
                     return _Chat;
                 });
-                if (res.Result.Title == null)
-                    return 1;
-                else return 0;
+
+                switch (res.Result.Type)
+                {
+                    case ChatType.Private:
+                        return 0;
+                    case ChatType.Group:
+                        return 1;
+                    case ChatType.Channel:
+                        return 2;
+                    case ChatType.Sender:
+                        return 3;
+                    case ChatType.Supergroup:
+                        return 4;
+                }
             }
             catch (Exception ex)
             {
                 Utils.Log.Exception(ex, caller_script);
-                Utils.Log.Error("In native 'IsChatPrivate' (invalid parameter)" + caller_script);
+                Utils.Log.Error("In native 'GetChatType' (invalid chatid?)" + caller_script);
             }
-            return 1;
+            return -1;
         }
 
         public static int GetChatDescription(AMX amx1, AMXArgumentList args1, Script caller_script)
@@ -218,6 +229,26 @@ namespace telepawn.Scripting
             {
                 Utils.Log.Exception(ex, caller_script);
                 Utils.Log.Error("In native 'GetChatDescription' (dest_string must be an char array, invalid parameters, or you try to get description from a private chat)" + caller_script);
+            }
+            return 1;
+        }
+
+        public static int GetChatSlowModeDelay(AMX amx1, AMXArgumentList args1, Script caller_script)
+        {
+            if (args1.Length != 1) return 0;
+            try
+            {
+                var res = Task.Run(async () =>
+                {
+                    Chat _Chat = await Program.m_TelegramHandle.m_TelegramBotClient.GetChatAsync(args1[0].AsString()).ConfigureAwait(false);
+                    return _Chat;
+                });
+                return Convert.ToInt32(res.Result.SlowModeDelay);
+            }
+            catch (Exception ex)
+            {
+                Utils.Log.Exception(ex, caller_script);
+                Utils.Log.Error("In native 'GetChatSlowModeDelay' (invalid chat id, or not a supergroup)" + caller_script);
             }
             return 1;
         }
