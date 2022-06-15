@@ -30,7 +30,7 @@ public OnChatMemberAdded(chatid[], userid[])
 {
     new str[123];
     GetUserBio(userid, str);
-    printf("%s joined the chat %s, %s\n", GetName(userid), chatid, str);
+    printf("%s joined the chat %s (Bio: %s)\n", GetName(userid), chatid, str);
     return 1;
 }
 
@@ -42,24 +42,13 @@ public OnChatMemberLeft(chatid[], userid[])
 
 public OnTelegramMessage(chatid[], messageid, userid[], message[]) //Userid can be longer than an integer, so we pass it as a string array.
 {
-        //Here you can see whats possible(really basic)
-
-    /*if(IsChatPrivate(chatid))
+    //Here you can see whats possible(really basic)
+    if(IsChatPrivate(chatid))
         SendChatMessage(chatid, "Private chat message..");
     else
-        SendChatMessage(chatid, "Public chat message");*/
+        SendChatMessage(chatid, "Public chat message");
 
-    printf("Message(id: %d) from %s(id: %s) in chat %s: %s\n", messageid, userid, GetName(userid), chatid, message);
-
-   //Another example (pins a message, but not really, just pinning the comment itself)
-
-   /*if(strequals(message, "pin"))
-        PinChatMessage(chatid, messageid);
-    else if(strequals(message, "unpin"))
-        PinChatMessage(chatid, messageid);
-    else SendChatMessage(chatid, "What do you want to test? pin | unpin");*/
-
-
+    printf("Message(id: %d) from %s(id: %s) in chat %s: %s\n", messageid, userid, GetName(userid), chatid, message)
     return 1;
 }
 
