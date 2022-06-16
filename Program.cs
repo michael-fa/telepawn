@@ -113,6 +113,23 @@ namespace telepawn
                 return;
             }
 
+            //Now add all filterscripts
+            try
+            {
+                foreach (string fl in Directory.GetFiles("Scripts/"))
+                {
+                    // demand load main.amx     ||  skip this file
+                    if (fl.StartsWith("!") || fl.Contains("main.amx") || !fl.EndsWith(".amx")) continue;
+                    Log.Info("[CORE] Found filterscript: '" + fl.Remove(0, 8).Replace(".amx", "") + "' !");
+                    new Script(fl.Remove(0, 8).Replace(".amx", ""), true);
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Exception(ex);
+                StopSafely();
+                return;
+            }
 
             //Load main.amx, or error out if not available
             if (!File.Exists("Scripts/main.amx"))
@@ -122,25 +139,6 @@ namespace telepawn
                 return;
             }
             else new Script(Program.m_Settings._firstScript);
-
-            //Now add all filterscripts
-            try
-            {
-                foreach (string fl in Directory.GetFiles("Scripts/"))
-                {
-                    Match mtch = Regex.Match(fl, "(?=/!).*(?=.amx)");
-                    // demand load main.amx     ||  skip this file
-                    if (fl.Contains("main.amx") || !fl.EndsWith(".amx") || mtch.Success) continue;
-                    Log.Info("[CORE] Found filterscript: '" + mtch.Value.ToString().Remove(0, 1) + "' !");
-                    new Script(mtch.Value.ToString().Remove(0, 1), true);
-                }
-            }
-            catch (Exception ex)
-            {
-                Log.Exception(ex);
-                StopSafely();
-                return;
-            }
 
 
             //We first want to prefetch (only call constructor methods, returning us the natives) and then, above, load all the scripts and finally "really load" the plugins.
