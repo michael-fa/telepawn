@@ -80,6 +80,67 @@ namespace telepawn.Scripting
             return 1;
         }
 
+        public static int CallRemoteFunction(AMX amx1, AMXArgumentList args1, Script caller_script)
+        {
+            try
+            {
+                if (args1.Length == 1)
+                {
+                    if (args1[0].AsString().Length < 2)
+                        return 0;
+
+                    AMXPublic tmp = null;
+                    foreach (Script scr in Program.m_Scripts)
+                    {
+                        tmp = scr.m_Amx.FindPublic(args1[0].AsString());
+                        if (tmp != null) tmp.Execute();
+                    }
+                    return 1;
+                }
+                else if (args1.Length >= 3)
+                {
+                    int count = (args1.Length - 1);
+
+                    AMXPublic p = null;
+                    foreach (Script scr in Program.m_Scripts)
+                    {
+                        p = scr.m_Amx.FindPublic(args1[0].AsString());
+                        if (p == null) continue;
+                        foreach (char x in args1[1].AsString().ToCharArray())
+                        {
+                            if (count == 1) break;
+                            switch (x)
+                            {
+                                //Add rational number support
+                                case 'i':
+                                    {
+
+                                        p.AMX.Push(args1[count].AsIntPtr());
+                                        count--;
+                                        continue;
+                                    }
+                                case 's':
+                                    {
+                                        CellPtr tmp_ = p.AMX.Push(args1[count].AsString());
+                                        p.AMX.Release(tmp_);
+                                        count--;
+                                        continue;
+                                    }
+                            }
+                        }
+                        p.Execute();
+                        p.AMX.Dispose();
+                        GC.Collect();
+                    }
+                }
+            }
+            catch(Exception ex)
+            {
+                Utils.Log.Exception(ex);
+            }
+            return 1;
+        }
+
         public static int gettimestamp(AMX amx1, AMXArgumentList args1, Script caller_script)
         {
             return (Int32)DateTimeOffset.Now.ToUnixTimeSeconds();
