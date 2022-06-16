@@ -58,11 +58,13 @@ namespace telepawn.Scripting
             }
             else
             {
-                this.m_Amx.ExecuteMain();
+                
 
                 try
                 {
                     Utils.Log.Debug("Loading script as main script, ID 0.", this);
+
+                    this.m_Amx.ExecuteMain();
                     AMXPublic p = this.m_Amx.FindPublic("OnInit");
 
 
@@ -101,6 +103,7 @@ namespace telepawn.Scripting
             m_Amx.Register("SetTimer", (amx1, args1) => Natives.SetTimer(amx1, args1, this));
             m_Amx.Register("KillTimer", (amx1, args1) => Natives.KillTimer(amx1, args1, this));
             m_Amx.Register("gettimestamp", (amx1, args1) => Natives.gettimestamp(amx1, args1, this));
+            m_Amx.Register("CallRemoteFunction", (amx1, args1) => Natives.CallRemoteFunction(amx1, args1, this));
             
             m_Amx.Register("GetChatType", (amx1, args1) => Natives.GetChatType(amx1, args1, this));
             m_Amx.Register("GetChatSlowModeDelay", (amx1, args1) => Natives.GetChatSlowModeDelay(amx1, args1, this));
