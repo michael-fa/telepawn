@@ -82,10 +82,10 @@ Linux support is coming soon!
 
 ## Current Features
 * Load & unload filterscripts and *make remote calls between them*
-* Send messages to users or delete them
-* Pin messages
-* Get user bio and channel description
-* A few more tools
+* Send (or delete) messages to users
+* Pin messages (Unpin single or all)
+* Get user bio and more, same to channels like the description
+* A few more tools provided along the way.
 * Load plugins ( **extending the internal bot functionality... nothing script-related other then that it's adding script functions.** )
 * Set and delete timers
 
