@@ -81,7 +81,7 @@ Linux support is coming soon!
 
 
 ## Current Features
-* Load & unload filterscripts 
+* Load & unload filterscripts and *make remote calls between them*
 * Send messages to users or delete them
 * Pin messages
 * Get user bio and channel description
