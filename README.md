@@ -16,7 +16,7 @@ main()
 
 public OnInit(botid[])
 {
-    printf("Bot with ID %s has been initialised.\n");
+    printf("Bot with ID %s has been initialised.\n", botid);
     return 1;
 }
 
