@@ -91,8 +91,9 @@ Linux support is coming soon!
 
 
 ## Planned for first release
-* Too much. We aim for basic chat functionality, and moving to image and audio handling soon too.
-* Media files just have to be put in scriptfiles folder allowing scripters direct access and work with the media.
+* Media / File handling
+* Inline Messages / Buttons
+* (Maybe) Net Connection between telepawn bots, since I don't like to enable users scripting the bot-creation part itself, enabling mutiple bots in one program. 
 
 ### Third party info
 * Using [PAWN Wrapper by ikkentim](https://github.com/ikkentim/AMXWrapper)
