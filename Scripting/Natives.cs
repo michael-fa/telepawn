@@ -102,16 +102,20 @@ namespace telepawn.Scripting
                     int count = (args1.Length - 1);
 
                     AMXPublic p = null;
+                    List<CellPtr> Cells = new List<CellPtr>();
+
+                    //Important so the format ( ex "iissii" ) is aligned with the arguments pushed to the callback, not being reversed
+                    string reversed_format = Utils.ReverseString.Reverse(args1[1].AsString());
+
                     foreach (Script scr in Program.m_Scripts)
                     {
                         p = scr.m_Amx.FindPublic(args1[0].AsString());
                         if (p == null) continue;
-                        foreach (char x in args1[1].AsString().ToCharArray())
+                        foreach(char x in reversed_format.ToCharArray())
                         {
                             if (count == 1) break;
                             switch (x)
                             {
-                                //Add rational number support
                                 case 'i':
                                     {
 
@@ -119,16 +123,28 @@ namespace telepawn.Scripting
                                         count--;
                                         continue;
                                     }
+                                /*case 'f':
+                                    {
+                                        //
+                                        p.AMX.RaiseError(AMXError.NativeError);
+                                        p.AMX.Push(args1[count].AsFloat());
+                                        count--;
+                                        continue;
+                                    }
+                                */
                                 case 's':
                                     {
-                                        CellPtr tmp_ = p.AMX.Push(args1[count].AsString());
-                                        p.AMX.Release(tmp_);
+                                        Cells.Add(p.AMX.Push(args1[count].AsString()));
                                         count--;
                                         continue;
                                     }
                             }
                         }
                         p.Execute();
+                        foreach(CellPtr cell in Cells)
+                        {
+                            p.AMX.Release(cell);
+                        }
                         p.AMX.Dispose();
                         GC.Collect();
                     }
