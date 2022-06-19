@@ -16,7 +16,7 @@ main()
 
 public OnInit(botid[])
 {
-    printf("Bot with ID %s has been initialised.\n");
+    printf("Bot with ID %s has been initialised.\n", botid);
     return 1;
 }
 
@@ -81,18 +81,19 @@ Linux support is coming soon!
 
 
 ## Current Features
-* Load & unload filterscripts 
-* Send messages to users or delete them
-* Pin messages
-* Get user bio and channel description
-* A few more tools
+* Load & unload filterscripts and *make remote calls between them*
+* Send (or delete) messages to users
+* Pin messages (Unpin single or all)
+* Get user bio and more, same to channels like the description
+* A few more tools provided along the way.
 * Load plugins ( **extending the internal bot functionality... nothing script-related other then that it's adding script functions.** )
 * Set and delete timers
 
 
 ## Planned for first release
-* Too much. We aim for basic chat functionality, and moving to image and audio handling soon too.
-* Media files just have to be put in scriptfiles folder allowing scripters direct access and work with the media.
+* Media / File handling
+* Inline Messages / Buttons
+* (Maybe) Net Connection between telepawn bots, since I don't like to enable users scripting the bot-creation part itself, enabling mutiple bots in one program. 
 
 ### Third party info
 * Using [PAWN Wrapper by ikkentim](https://github.com/ikkentim/AMXWrapper)
