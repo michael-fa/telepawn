@@ -109,6 +109,7 @@ namespace telepawn.Scripting
 
                     foreach (Script scr in Program.m_Scripts)
                     {
+                        if (scr.Equals(caller_script)) continue;
                         p = scr.m_Amx.FindPublic(args1[0].AsString());
                         if (p == null) continue;
                         foreach(char x in reversed_format.ToCharArray())
@@ -123,15 +124,13 @@ namespace telepawn.Scripting
                                         count--;
                                         continue;
                                     }
-                                /*case 'f':
+                                case 'f':
                                     {
-                                        //
-                                        p.AMX.RaiseError(AMXError.NativeError);
-                                        p.AMX.Push(args1[count].AsFloat());
+                                        p.AMX.Push(args1[count]);
                                         count--;
                                         continue;
                                     }
-                                */
+                                
                                 case 's':
                                     {
                                         Cells.Add(p.AMX.Push(args1[count].AsString()));
@@ -140,14 +139,17 @@ namespace telepawn.Scripting
                                     }
                             }
                         }
+                        //Reset our arg index counter
+                        count = (args1.Length - 1);
                         p.Execute();
-                        foreach(CellPtr cell in Cells)
-                        {
-                            p.AMX.Release(cell);
-                        }
-                        p.AMX.Dispose();
-                        GC.Collect();
+
                     }
+
+                    foreach (CellPtr cell in Cells)
+                    {
+                        p.AMX.Release(cell);
+                    }
+                    GC.Collect();
                 }
             }
             catch(Exception ex)
