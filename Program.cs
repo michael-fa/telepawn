@@ -8,7 +8,6 @@ using telepawn.Utils;
 using telepawn.Scripting;
 using System.Text.RegularExpressions;
 using System.Diagnostics;
-using AMXWrapper;
 
 namespace telepawn
 {
@@ -27,7 +26,7 @@ namespace telepawn
         public struct Settings
         {
             public string _botToken;
-            public string _firstScript;
+            public string _mainScript;
             public bool _clientMode;
         } public static Settings m_Settings;
 
@@ -139,7 +138,7 @@ namespace telepawn
                 StopSafely();
                 return;
             }
-            else new Script(Program.m_Settings._firstScript);
+            else new Script(Program.m_Settings._mainScript);
 
 
             //We first want to prefetch (only call constructor methods, returning us the natives) and then, above, load all the scripts and finally "really load" the plugins.
@@ -166,6 +165,7 @@ namespace telepawn
             if (!Directory.Exists("Scripts/"))
                 Directory.CreateDirectory("Scripts/");
 
+            bool bOpenEditor = false;
 
             //Check if config.ini exists
             if (!File.Exists("config.ini"))
@@ -175,17 +175,7 @@ namespace telepawn
                 xx.Dispose();
                 File.AppendAllText("config.ini", "# (C) 2022 fanter.eu - TELEPAWN\n\n# This is your server config - the \"core\" section has to be set before you consider running the bot!");
                 Log.Warning("[CORE] You don't have any bot token set up right now. Please edit the config.ini file in the bot's root folder.");
-                if(m_isWindows)
-                {
-                    Process.Start("notepad.exe", AppDomain.CurrentDomain.BaseDirectory + "/config.ini");
-                    Console.WriteLine("Press enter to continue (closing the program).");
-                    Console.Read();
-                    StopSafely();
-                }
-                else
-                {
-                    StopSafely();
-                }
+                bOpenEditor = true;
             }
 
             //"Scan" the config file before using it.
@@ -194,11 +184,23 @@ namespace telepawn
             if (!x.KeyExists("telegram_bot_token", "core"))
                 x.Write("telegram_bot_token", "Not set", "core");
 
-            if (!x.KeyExists("first_script", "core"))
-                x.Write("first_script", "main", "core");
+            if (!x.KeyExists("main_script", "core"))
+                x.Write("main_script", "main", "core");
 
             if (!x.KeyExists("client_mode", "core"))
                 x.Write("client_mode", "false", "core");
+
+            if (m_isWindows && bOpenEditor)
+            {
+                Process.Start("notepad.exe", AppDomain.CurrentDomain.BaseDirectory + "/config.ini");
+                Console.WriteLine("Press enter to continue (closing the program).");
+                Console.Read();
+                StopSafely();
+            }
+            else if(m_isLinux)
+            {
+                StopSafely();
+            }
 
         }
 
@@ -217,7 +219,7 @@ namespace telepawn
             //Get data from config.ini
             IniFile x = new IniFile("config.ini");
             m_Settings._botToken = x.Read("telegram_bot_token", "core");
-            m_Settings._firstScript = x.Read("first_script", "core");
+            m_Settings._mainScript = x.Read("main_script", "core");
             m_Settings._clientMode = Convert.ToBoolean(x.Read("client_mode", "core"));
             GC.Collect();
 
@@ -232,13 +234,16 @@ namespace telepawn
 
         static public void StopSafely()
         {
-
-            foreach (Plugins.Plugin pl in m_Plugins)
+            if(m_Plugins != null)
             {
-                pl.Unload(0);
+                foreach (Plugins.Plugin pl in m_Plugins)
+                {
+                    pl.Unload(0);
 
-                Log.WriteLine("Script " + pl._File + " unloaded.");
+                    Log.WriteLine("Script " + pl._File + " unloaded.");
+                }
             }
+            
 
             foreach (Script script in m_Scripts)
             {
