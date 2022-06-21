@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace telepawn.Utils
 {
-    public static class ConsoleCommand
+    public class ConsoleCommand
     {
 
 
@@ -35,13 +35,13 @@ namespace telepawn.Utils
                         break;
                     case "reloadscript":
                         ReloadScript(cmd.Skip(1).ToArray()); //Skip(1) will skip the command string itself and pass the rest of the whole string.
-                        break;
+                        return;
                     case "callpub":
                         CallPublic(cmd.Skip(1).ToArray()); //Skip(1) will skip the command string itself and pass the rest of the whole string.
                         break;
                     case "reloadall":
                         ReloadAll(); //Skip(1) will skip the command string itself and pass the rest of the whole string.
-                        break;
+                        return;
                     case "help":
                         Help();
                         break;
@@ -50,7 +50,6 @@ namespace telepawn.Utils
             }
 
             if (wholecmd.Length == 0) return;
-
 
             //Call OnConsoleInput for every script
             AMXPublic p = null;
@@ -63,8 +62,8 @@ namespace telepawn.Utils
                     p.Execute();
                     p.AMX.Release(tmp1);
                 }
-                p = null;
             }
+            
         }
 
 
@@ -109,15 +108,21 @@ namespace telepawn.Utils
                 return;
             }
 
+            AMXPublic pub;
+
+            
+
+            //Find the script
             foreach (Script sc in Program.m_Scripts)
             {
-                if (sc.m_AmxFile.Equals(args[0]))
+                if (sc.m_AmxFile.Contains(args[0]))
                 {
-                    AMXWrapper.AMXPublic pub = sc.m_Amx.FindPublic("OnUnload");
+                    pub = sc.m_Amx.FindPublic("OnUnload");
                     if (pub != null) pub.Execute();
+
+                    Program.m_Scripts.Remove(sc);
                     sc.m_Amx.Dispose();
                     sc.m_Amx = null;
-                    Program.m_Scripts.Remove(sc);
                     Log.Info("[CORE] Script '" + args[0] + "' unloaded.");
                     return;
                 }
@@ -145,9 +150,6 @@ namespace telepawn.Utils
                     if (pub != null) 
                     {
                         pub.Execute();
-                        sc.m_Amx.Dispose();
-                        sc.m_Amx = null;
-                        Program.m_Scripts.Remove(sc);
                         Log.Info("[CORE] Public '" + args[1] + "' in script '" + args[0] + "' called.");
                         break;
                     }
@@ -172,25 +174,23 @@ namespace telepawn.Utils
             bool _isFs = false;
             foreach (Script sc in Program.m_Scripts)
             {
+                if (sc.m_Amx == null) continue;
                 if (sc.m_AmxFile.Equals(args[0]))
                 {
                     if (sc.m_isFs)
                         _isFs = true;
-                    AMXWrapper.AMXPublic pub = sc.m_Amx.FindPublic("OnUnload");
-                    if (pub != null) pub.Execute();
-                    sc.m_Amx.Dispose();
-                    sc.m_Amx = null;
-                    Program.m_Scripts.Remove(sc);
+
+                    UnloadScript(args);
 
                     if (!File.Exists("Scripts/" + args[0] + ".amx"))
                     {
                         Log.Error(" [command] The script file " + args[0] + ".amx does not exist in /Scripts/ folder.");
                         return;
                     }
-                    Script scr = new Script(args[0]);
+                    Script scr = new Script(args[0], _isFs);
 
                     Log.Info("[CORE] Script '" + args[0] + "' reloaded.");
-                    return;
+                    break;
                 }
             }
         }

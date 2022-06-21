@@ -8,6 +8,7 @@ using telepawn.Utils;
 using telepawn.Scripting;
 using System.Text.RegularExpressions;
 using System.Diagnostics;
+using AMXWrapper;
 
 namespace telepawn
 {
@@ -164,6 +165,7 @@ namespace telepawn
             //Check if Scripts dir exists
             if (!Directory.Exists("Scripts/"))
                 Directory.CreateDirectory("Scripts/");
+
 
             //Check if config.ini exists
             if (!File.Exists("config.ini"))

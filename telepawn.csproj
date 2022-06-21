@@ -218,6 +218,7 @@
     <Compile Include="Utils\INI.cs" />
     <Compile Include="Utils\LogFunctions.cs" />
     <Compile Include="Utils\PluginTools.cs" />
+    <Compile Include="Utils\Reverse.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

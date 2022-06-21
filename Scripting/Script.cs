@@ -20,7 +20,7 @@ namespace telepawn.Scripting
             this.m_AmxFile = _amxFile;
             try
             {
-                m_Amx = new AMX("Scripts/" + _amxFile + ".amx");
+                this.m_Amx = new AMX("Scripts/" + _amxFile + ".amx");
             }
             catch (Exception e)
             {
@@ -28,24 +28,15 @@ namespace telepawn.Scripting
                 return;
             }
 
-            m_Amx.LoadLibrary(AMXDefaultLibrary.Core);
-            m_Amx.LoadLibrary(AMXDefaultLibrary.String);
-            m_Amx.LoadLibrary(AMXDefaultLibrary.Console);
-            m_Amx.LoadLibrary(AMXDefaultLibrary.DGram);
-            m_Amx.LoadLibrary(AMXDefaultLibrary.Float);
-            m_Amx.LoadLibrary(AMXDefaultLibrary.Time);
-            m_Amx.LoadLibrary(AMXDefaultLibrary.Fixed);
+            this.m_Amx.LoadLibrary(AMXDefaultLibrary.Core | AMXDefaultLibrary.Float | AMXDefaultLibrary.String | AMXDefaultLibrary.Console | AMXDefaultLibrary.DGram |AMXDefaultLibrary.Time);
 
             this.RegisterNatives();
-
-            Program.m_Scripts.Add(this);
 
             if (_isFilterscript)
             {
                 this.m_isFs = _isFilterscript;
-                Utils.Log.Debug("Loading filterscript as ID: " + (Program.m_Scripts.Count - 1), this);
-                AMXPublic p = null;
-                p = m_Amx.FindPublic("OnFilterscriptInit");
+                Utils.Log.Debug("Loading filterscript as ID: " + Program.m_Scripts.Count, this);
+                AMXPublic p = this.m_Amx.FindPublic("OnFilterscriptInit");
                 if (p != null)
                 {
                     var x = p.AMX.Push(Program.m_TelegramHandle.m_TelegramBotClient.BotId.ToString());
@@ -54,20 +45,16 @@ namespace telepawn.Scripting
                     p.AMX.Release(x);
 
                 }
-                
             }
             else
             {
-                
-
                 try
                 {
-                    Utils.Log.Debug("Loading script as main script, ID 0.", this);
+                    Utils.Log.Debug("Loading script as main script, ID: " + Program.m_Scripts.Count, this);
 
                     this.m_Amx.ExecuteMain();
+
                     AMXPublic p = this.m_Amx.FindPublic("OnInit");
-
-
                     if (p != null)
                     {
                         var x = p.AMX.Push(Program.m_TelegramHandle.m_TelegramBotClient.BotId.ToString());
@@ -81,7 +68,9 @@ namespace telepawn.Scripting
                     Utils.Log.Exception(ex);
                 }
             }
-            
+
+            Program.m_Scripts.Add(this);
+
             return;
         }
 
