@@ -126,7 +126,7 @@ namespace telepawn.Scripting
                                     }
                                 case 'f':
                                     {
-                                        p.AMX.Push(args1[count]);
+                                        p.AMX.Push((float)args1[count].AsCellPtr().Get().AsFloat());
                                         count--;
                                         continue;
                                     }
