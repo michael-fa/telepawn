@@ -22,7 +22,7 @@ namespace telepawn
         public static List<Plugins.Plugin> m_Plugins = null;
         public static List<Scripting.Script> m_Scripts = null;
         public static List<Plugins.PluginNatives> m_PluginNatives = null;
-      
+
         public struct Settings
         {
             public string _botToken;
@@ -106,6 +106,7 @@ namespace telepawn
                     new Plugins.Plugin(fl);
                 }
             }
+
             catch (Exception ex)
             {
                 Utils.Log.Exception(ex);
@@ -234,7 +235,7 @@ namespace telepawn
 
         static public void StopSafely()
         {
-            if(m_Plugins != null)
+            if (m_Plugins != null)
             {
                 foreach (Plugins.Plugin pl in m_Plugins)
                 {
@@ -243,7 +244,7 @@ namespace telepawn
                     Log.WriteLine("Script " + pl._File + " unloaded.");
                 }
             }
-            
+
 
             foreach (Script script in m_Scripts)
             {
@@ -263,7 +264,7 @@ namespace telepawn
             File.Copy("Logs/current.txt", ("Logs/" + DateTime.Now.ToString().Replace(':', '-') + ".txt"));
             if (File.Exists("Logs/current.txt")) File.Delete("Logs/current.txt");
             Environment.Exit(0);
-            
+
         }
 
     }

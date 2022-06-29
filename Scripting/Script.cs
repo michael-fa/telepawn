@@ -28,7 +28,7 @@ namespace telepawn.Scripting
                 return;
             }
 
-            this.m_Amx.LoadLibrary(AMXDefaultLibrary.Core | AMXDefaultLibrary.Float | AMXDefaultLibrary.String | AMXDefaultLibrary.Console | AMXDefaultLibrary.DGram |AMXDefaultLibrary.Time);
+            this.m_Amx.LoadLibrary(AMXDefaultLibrary.Core | AMXDefaultLibrary.Float | AMXDefaultLibrary.String | AMXDefaultLibrary.Console | AMXDefaultLibrary.DGram | AMXDefaultLibrary.Time);
 
             this.RegisterNatives();
 
@@ -63,7 +63,7 @@ namespace telepawn.Scripting
                         p.Execute();
                     }
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     Utils.Log.Exception(ex);
                 }

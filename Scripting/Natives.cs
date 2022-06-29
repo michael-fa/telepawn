@@ -112,14 +112,13 @@ namespace telepawn.Scripting
                         if (scr.Equals(caller_script)) continue;
                         p = scr.m_Amx.FindPublic(args1[0].AsString());
                         if (p == null) continue;
-                        foreach(char x in reversed_format.ToCharArray())
+                        foreach (char x in reversed_format.ToCharArray())
                         {
                             if (count == 1) break;
                             switch (x)
                             {
                                 case 'i':
                                     {
-
                                         p.AMX.Push(args1[count].AsIntPtr());
                                         count--;
                                         continue;
@@ -130,7 +129,7 @@ namespace telepawn.Scripting
                                         count--;
                                         continue;
                                     }
-                                
+
                                 case 's':
                                     {
                                         Cells.Add(p.AMX.Push(args1[count].AsString()));
@@ -152,7 +151,7 @@ namespace telepawn.Scripting
                     GC.Collect();
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Utils.Log.Exception(ex);
             }
